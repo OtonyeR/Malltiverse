@@ -26,7 +26,7 @@ class ProductAd extends StatelessWidget {
             SizedBox(
               width: 221,
               height: 56,
-              child: Text('Premium Books, Premium Companions',
+              child: Text('Premium Sound, Premium Savings',
                   style: TextStyle(
                     fontSize: 18,
                     color: mainWhite,

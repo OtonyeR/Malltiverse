@@ -23,204 +23,206 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       cart: widget.cart,
       showLogo: false,
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24, top: 37),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Select how to receive your package(s)',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: mainBlack,
+        padding: const EdgeInsets.only(left: 24, right: 24, top: 12),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select how to receive your package(s)',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: mainBlack,
+                ),
               ),
-            ),
-            const SizedBox(height: 21),
-            Text(
-              'Pickup',
-              textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: Radio<String>(
-                        value:
-                            'Old Secretariat Complex, Area 1, Garki Abaji Abji',
-                        groupValue: _selectedOption,
-                        activeColor: primaryColor,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedOption = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Old Secretariat Complex, Area 1, Garki Abaji Abji',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+              const SizedBox(height: 21),
+              Text(
+                'Pickup',
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: Radio<String>(
+                          value:
+                              'Old Secretariat Complex, Area 1, Garki Abaji Abji',
+                          groupValue: _selectedOption,
+                          activeColor: primaryColor,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedOption = value;
+                            });
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: Radio<String>(
-                        value: 'Sokoto Street, Area 1, Garki Area 1 AMAC',
-                        groupValue: _selectedOption,
-                        activeColor: primaryColor,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedOption = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Sokoto Street, Area 1, Garki Area 1 AMAC',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Old Secretariat Complex, Area 1, Garki Abaji Abji',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Delivery',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  height: 60,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: BorderSide(
-                          color: mainBlack.withOpacity(0.7),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: Radio<String>(
+                          value: 'Sokoto Street, Area 1, Garki Area 1 AMAC',
+                          groupValue: _selectedOption,
+                          activeColor: primaryColor,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedOption = value;
+                            });
+                          },
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Contact',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  height: 38.83,
-                  width: MediaQuery.of(context).size.width * 0.579439,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Phone no. 1',
-                      hintStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: BorderSide(
-                          color: mainBlack.withOpacity(0.7),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Sokoto Street, Area 1, Garki Area 1 AMAC',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width * 0.579439,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Phone no. 2',
-                      hintStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: BorderSide(
-                          color: mainBlack.withOpacity(0.7),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 60),
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.71728971,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentScreen(
-                          cart: widget.cart,
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text(
-                    'Checkout',
+                ],
+              ),
+              const SizedBox(height: 32),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Delivery',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: mainBlack,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 60,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: BorderSide(
+                            color: mainBlack.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Contact',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 38.83,
+                    width: MediaQuery.of(context).size.width * 0.579439,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Phone no. 1',
+                        hintStyle: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: BorderSide(
+                            color: mainBlack.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.579439,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Phone no. 2',
+                        hintStyle: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                          borderSide: BorderSide(
+                            color: mainBlack.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 60),
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.71728971,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PaymentScreen(
+                            cart: widget.cart,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    child: const Text(
+                      'Checkout',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: mainBlack,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
