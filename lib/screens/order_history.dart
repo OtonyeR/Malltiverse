@@ -15,12 +15,6 @@ class OrderHistoryScreen extends ConsumerStatefulWidget {
 
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   @override
-  void initState() {
-    ref.read(orderHistoryProvider.notifier);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final orderHistory = ref.watch(orderHistoryProvider);
 

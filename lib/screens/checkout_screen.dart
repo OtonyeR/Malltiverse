@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:malltiverse/components/colors.dart';
+import 'package:malltiverse/providers/history_provider.dart';
 import 'package:malltiverse/screens/nav_screen.dart';
 import 'dart:math';
 
@@ -92,7 +93,6 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
 
   Widget _buildCheckOutPage() {
     final cartItems = ref.watch(cartProvider);
-    final cartNotifier = ref.read(cartProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -229,9 +229,10 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                           cursorColor: primaryColor,
                           onTap: () {
                             deliveryFieldFocus.hasFocus;
+                            delivery = 'Delivery';
                           },
                           onSaved: (value) =>
-                              deliveryDetails = value.toString(),
+                              deliveryDetails = deliveryAddress.text,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(9),
@@ -275,7 +276,8 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                         child: TextFormField(
                           controller: phoneNumber[0],
                           cursorColor: primaryColor,
-                          onSaved: (value) => contacts.add(value.toString()),
+                          onSaved: (value) =>
+                              contacts.add(phoneNumber[0].toString()),
                           decoration: InputDecoration(
                             hintText: 'Phone no. 1',
                             hintStyle: const TextStyle(
@@ -314,9 +316,8 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                         child: TextFormField(
                           controller: phoneNumber[1],
                           cursorColor: primaryColor,
-                          onSaved: (value) => value != null
-                              ? contacts.add(value.toString())
-                              : contacts.add(''),
+                          onSaved: (value) =>
+                              contacts.add(phoneNumber[1].toString()),
                           decoration: InputDecoration(
                             hintText: 'Phone no. 2',
                             hintStyle: const TextStyle(
@@ -358,21 +359,13 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                                 content: Text('Your Cart is Empty!'),
                               ),
                             );
-                          } else if (_formKeyPayment.currentState?.validate() ??
+                          } else if (_formKeyDelivery.currentState
+                                  ?.validate() ??
                               false) {
                             _checkoutController.nextPage(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
-                            products = cartItems;
-                            subTotal = cartNotifier.calcSubTotal();
-                            total = cartNotifier.calcTotal();
-                            paymentDetails = 'Card Payment';
-                            itemNumber = cartNotifier.calcTotalQuantity();
-
-                            // Create the order and add it to the order history
-                            final order = _submitOrder();
-                            OrderHistoryBox().addOrder(order);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -406,6 +399,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
   Widget _buildPayPage() {
     final cartItems = ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
+    final historyNotifier = ref.read(orderHistoryProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -589,18 +583,20 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKeyPayment.currentState?.validate() ?? false) {
-                        _checkoutController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-
                         products = cartItems;
                         subTotal = cartNotifier.calcSubTotal();
                         total = cartNotifier.calcTotal();
                         paymentDetails = 'Card Payment';
                         itemNumber = cartNotifier.calcTotalQuantity();
                         final order = _submitOrder();
-                        OrderHistoryBox().addOrder(order);
+                        historyNotifier.addOrder(order);
+
+                        _checkoutController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+
+                        // Create the order and add it to the order history
                       }
                     },
                     style: ElevatedButton.styleFrom(

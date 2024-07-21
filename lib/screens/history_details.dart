@@ -34,6 +34,7 @@ class OrderDetailsScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,18 +47,27 @@ class OrderDetailsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               const Text('Products Ordered',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Expanded(
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: order.product.length,
-                  itemBuilder: (context, index) {
-                    final product = order.product[index];
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Text('Quantity: ${product.quantity}'),
-                    );
-                  },
-                ),
+              ListView.builder(
+                shrinkWrap: true, // Added to make ListView fit its content
+                physics:
+                    const NeverScrollableScrollPhysics(), // Disable inner scrolling
+                itemCount: order.product.length,
+                itemBuilder: (context, index) {
+                  final product = order.product[index];
+                  return ListTile(
+                    title: Text(product.name),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4),
+                        Text('Quantity: ${product.quantity}'),
+                        const SizedBox(height: 4),
+                        Text(
+                            'Price: ${priceTextTh(product.currentPrice.toString())}'),
+                      ],
+                    ),
+                  );
+                },
               ),
               Container(
                 alignment: Alignment.bottomCenter,
@@ -90,11 +100,12 @@ class OrderDetailsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: grey, borderRadius: BorderRadius.circular(4.0)),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Delivery Details',
+                        'Delivery Details - ${order.deliveryOption}',
                         style: TextStyle(
                           fontSize: 16,
                           color: mainBlack,
@@ -102,7 +113,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(order.deliveryOption, style: TextStyle(fontSize: 16)),
+                    SizedBox(height: 6),
                     Text(order.delivery, style: TextStyle(fontSize: 16)),
                   ],
                 ),
@@ -115,6 +126,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: grey, borderRadius: BorderRadius.circular(4.0)),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Align(
                       alignment: Alignment.centerLeft,
@@ -127,7 +139,11 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(order.contacts[0], style: TextStyle(fontSize: 16)),
+                    if (order.contacts.isNotEmpty)
+                      Text(order.contacts[0], style: TextStyle(fontSize: 16))
+                    else
+                      Text('No contact information available',
+                          style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),

@@ -14,7 +14,8 @@ class OrderHistoryNotifier extends StateNotifier<List<OrderItem>> {
   }
 
   void addOrder(OrderItem order) {
-    state = [...state, order];
+    _historyBox.addOrder(order);
+    state = _historyBox.getOrderHistory();
   }
 
   List<OrderItem> get orders => state;
