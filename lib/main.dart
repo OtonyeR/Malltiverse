@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:malltiverse/navigation_menu.dart';
-import 'package:malltiverse/screens/product_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:malltiverse/screens/nav_screen.dart';
 
-import 'models/cart.dart';
+import 'models/order_item.dart';
+import 'models/product.dart';
+import 'services/hive_services.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(OrderItemAdapter());
+  await openBoxes();
+  runApp(const ProviderScope(child: MyApp()));
+}
+
+Future<void> openBoxes() async {
+  await Hive.openBox<Product>('dataBox');
+  await Hive.openBox<OrderItem>('historyBox');
 }
 
 class MyApp extends StatefulWidget {
@@ -17,8 +30,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Cart cart = Cart();
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -29,7 +40,9 @@ class _MyAppState extends State<MyApp> {
           Theme.of(context).textTheme,
         ),
       ),
-      home: ProductPage(cart: cart),
+      home: MainScreen(
+        index: 0,
+      ),
     );
   }
 }

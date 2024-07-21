@@ -1,41 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:malltiverse/components/widgets/product_tile.dart';
-import 'package:malltiverse/product_data.dart';
-
-import '../../models/cart.dart';
+import 'package:malltiverse/providers/product_provider.dart';
+import 'package:malltiverse/providers/wishlist_provider.dart';
+import 'package:malltiverse/services/api_services.dart';
 import '../../models/product.dart';
+import '../../providers/cart_provider.dart';
 import '../colors.dart';
+import 'error_box.dart';
 
-class ProductsSection extends StatefulWidget {
+class ProductsSection extends ConsumerStatefulWidget {
   final String categoryName;
+  final List<Product> categoryProducts;
   final bool top;
-  final Cart cart;
   const ProductsSection({
     Key? key,
     required this.categoryName,
     required this.top,
-    required this.cart,
+    required this.categoryProducts,
   }) : super(key: key);
 
   @override
-  State<ProductsSection> createState() => _ProductsSectionState();
+  ConsumerState<ProductsSection> createState() => _ProductsSectionState();
 }
 
-class _ProductsSectionState extends State<ProductsSection> {
+class _ProductsSectionState extends ConsumerState<ProductsSection> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
+  Map<String, String> _ratings = {};
 
-  List<Product> getFilteredProducts() {
-    return productData
-        .where((product) => product.category == widget.categoryName)
-        .toList();
+  @override
+  void initState() {
+    super.initState();
+    _fetchRatings();
+  }
+
+  Future<void> _fetchRatings() async {
+    Map<String, String> ratings = {};
+    for (var product in widget.categoryProducts) {
+      final rating = await ApiService().getInfo(product.id);
+      ratings[product.id] = rating;
+    }
+    setState(() {
+      _ratings = ratings;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     int itemsPerPage = 2;
-    List<Product> categoryProducts = getFilteredProducts();
-    int numPages = (categoryProducts.length / itemsPerPage).ceil();
+    int numPages = (widget.categoryProducts.length / itemsPerPage).ceil();
+    final cartNotifier = ref.read(cartProvider.notifier);
+    final wishNotifier = ref.read(wishlistProvider.notifier);
+    final wishItems = ref.watch(wishlistProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,17 +62,18 @@ class _ProductsSectionState extends State<ProductsSection> {
           style: const TextStyle(
             fontSize: 20,
             color: mainBlack,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: widget.top == true ? 16 : 28),
+        SizedBox(height: widget.top == true ? 16 : 22),
         SizedBox(
           height: 346,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: PageView.builder(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   controller: _controller,
                   onPageChanged: (index) {
                     setState(() {
@@ -66,22 +84,40 @@ class _ProductsSectionState extends State<ProductsSection> {
                   itemBuilder: (context, pageIndex) {
                     int startIndex = pageIndex * itemsPerPage;
                     int endIndex = startIndex + itemsPerPage;
-                    List<Product> pageProducts = categoryProducts.sublist(
+                    List<Product> pageProducts =
+                        widget.categoryProducts.sublist(
                       startIndex,
-                      endIndex > categoryProducts.length
-                          ? categoryProducts.length
+                      endIndex > widget.categoryProducts.length
+                          ? widget.categoryProducts.length
                           : endIndex,
                     );
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: pageProducts
-                          .map((product) => ProductTile(
-                                product: product,
-                                onTap: () {
-                                  widget.cart.addToCart(product);
-                                },
-                              ))
-                          .toList(),
+                      children: pageProducts.map((product) {
+                        Center(
+                          child: ErrorBox(
+                              message:
+                                  'We seem to be having connection troubles',
+                              onPressed: () async {
+                                await ref
+                                    .read(productProvider.notifier)
+                                    .fetchProducts();
+                              }),
+                        );
+                        final rating = _ratings[product.id] ?? '0';
+                        return ProductTile(
+                          product: product,
+                          onAddToCart: () {
+                            cartNotifier.addToCart(product);
+                            if (wishItems.any(
+                                    (element) => element.id == product.id) ==
+                                true) {
+                              wishNotifier.removeProduct(product.id);
+                            }
+                          },
+                          productRating: rating,
+                        );
+                      }).toList(),
                     );
                   },
                 ),
@@ -89,7 +125,7 @@ class _ProductsSectionState extends State<ProductsSection> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(numPages, (index) {
@@ -104,6 +140,7 @@ class _ProductsSectionState extends State<ProductsSection> {
             );
           }),
         ),
+        const SizedBox(height: 32),
       ],
     );
   }
