@@ -170,7 +170,7 @@ class _CartTileState extends ConsumerState<CartTile> {
                 cartNotifier.removeFromCart(widget.cartItem);
                 wishNotifier.addProduct(widget.cartItem);
               },
-              icon: CircleAvatar(
+              icon: const CircleAvatar(
                 radius: 14,
                 backgroundColor: primaryColor,
                 child: Icon(

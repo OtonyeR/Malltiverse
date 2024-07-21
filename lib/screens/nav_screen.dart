@@ -9,6 +9,7 @@ import '../providers/cart_provider.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   int index;
+
   MainScreen({
     required this.index,
     Key? key,
@@ -27,7 +28,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     super.initState();
     // Initialize pages
     _pages.add(const ProductPage());
-    _pages.add(const CartScreen());
+    _pages.add(CartScreen());
     _pages.add(const CheckOutScreen());
   }
 

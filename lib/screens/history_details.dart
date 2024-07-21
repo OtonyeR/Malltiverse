@@ -71,17 +71,17 @@ class OrderDetailsScreen extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.bottomCenter,
-                margin: const EdgeInsets.only(bottom: 31),
+                margin: const EdgeInsets.symmetric(vertical: 20),
                 padding: const EdgeInsets.only(
                     left: 17, top: 20, right: 15, bottom: 18),
                 decoration: BoxDecoration(
                     color: grey, borderRadius: BorderRadius.circular(4.0)),
                 child: Column(
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Card Payment',
+                        order.paymentDetails,
                         style: TextStyle(
                           fontSize: 16,
                           color: mainBlack,
@@ -226,8 +226,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const Text(
-                              'N 0',
+                            Text(
+                              priceTextTh(order.discount.toString()),
                               style: TextStyle(
                                 fontSize: 14,
                                 color: mainBlack,

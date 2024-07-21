@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
-import 'package:malltiverse/components/widgets/price_tag.dart';
+import 'package:malltiverse/providers/product_provider.dart';
 import '../components/colors.dart';
 import '../components/widgets/empty_view.dart';
-import '../models/product.dart';
 import '../providers/history_provider.dart';
 import 'history_details.dart';
 
 class OrderHistoryScreen extends ConsumerStatefulWidget {
+  const OrderHistoryScreen({super.key});
+
   @override
   ConsumerState<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
@@ -17,6 +17,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final orderHistory = ref.watch(orderHistoryProvider);
+    final orderNotifier = ref.read(orderHistoryProvider.notifier);
+    final product = ref.watch(productProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,8 +51,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       color: grey,
                     ),
                     child: const Center(
-                      child: Text('Order Summary',
-                          style: const TextStyle(fontSize: 16)),
+                      child:
+                          Text('Order Summary', style: TextStyle(fontSize: 16)),
                     ),
                   ),
                   Expanded(

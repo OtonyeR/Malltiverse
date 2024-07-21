@@ -1,10 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:malltiverse/providers/history_provider.dart';
+import '../models/order_item.dart';
 import '../models/product.dart';
 
 class Cart extends StateNotifier<List<Product>> {
   Cart() : super([]);
 
   int get deliveryFee => 1500;
+
+  int discountAmount = 0;
 
   List<Product> get cartItems => state;
 
@@ -63,20 +67,37 @@ class Cart extends StateNotifier<List<Product>> {
     return totalQuantity.toString();
   }
 
-  String calcSubTotal() {
+  int calcSubTotal() {
     int totalPrice = 0;
+    for (var product in state) {
+      totalPrice += product.currentPrice * product.quantity;
+    }
+    return totalPrice;
+  }
+
+  void applyDiscount(String code) {
+    if (code == '20OFF') {
+      discountAmount = (calcSubTotal() * 0.2).toInt();
+    } else {
+      discountAmount = 0;
+    }
+    state = [...state]; // To trigger the state update
+  }
+
+  String calcTotal() {
+    int totalPrice = deliveryFee - discountAmount;
     for (var product in state) {
       totalPrice += product.currentPrice * product.quantity;
     }
     return totalPrice.toString();
   }
 
-  String calcTotal() {
-    int totalPrice = deliveryFee;
-    for (var product in state) {
-      totalPrice += product.currentPrice * product.quantity;
-    }
-    return totalPrice.toString();
+  void clearCart() {
+    state = [];
+  }
+
+  void checkout() {
+    clearCart();
   }
 }
 

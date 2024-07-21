@@ -4,12 +4,15 @@ import 'package:malltiverse/components/colors.dart';
 import 'package:malltiverse/components/widgets/cart_tile.dart';
 import 'package:malltiverse/components/widgets/custom_divider.dart';
 import 'package:malltiverse/components/widgets/price_tag.dart';
+import 'package:malltiverse/providers/product_provider.dart';
 import 'package:malltiverse/screens/nav_screen.dart';
 import '../components/widgets/empty_view.dart';
 import '../providers/cart_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  bool discountAmount = false;
+
+  CartScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<CartScreen> createState() => _CartScreenState();
@@ -21,6 +24,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final cartItems = ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
     TextEditingController discountCode = TextEditingController();
+
+    cartNotifier.discountAmount = 0;
 
     return Scaffold(
       backgroundColor: mainWhite,
@@ -125,20 +130,16 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 const SizedBox(width: 16),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Show a SnackBar
-                                    discountCode.text != ''
-                                        ? ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Invalid Code. Please Try Again'),
-                                            ),
-                                          )
-                                        : ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                            content:
-                                                Text('Please Enter a code'),
-                                          ));
+                                    if (discountCode.text.isNotEmpty) {
+                                      cartNotifier
+                                          .applyDiscount(discountCode.text);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            'Invalid Code. Please Try Again'),
+                                      ));
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                       elevation: 0,
@@ -176,7 +177,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                       ),
                                     ),
                                     Text(
-                                      priceTextTh(cartNotifier.calcSubTotal()),
+                                      priceTextTh(cartNotifier
+                                          .calcSubTotal()
+                                          .toString()),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: mainBlack,
@@ -222,9 +225,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const Text(
-                                      'N 0',
-                                      style: TextStyle(
+                                    Text(
+                                      priceTextTh(cartNotifier.discountAmount
+                                          .toString()),
+                                      style: const TextStyle(
                                         fontSize: 14,
                                         color: mainBlack,
                                         fontWeight: FontWeight.w600,
@@ -249,7 +253,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                   ),
                                 ),
                                 Text(
-                                  priceTextTh(cartNotifier.calcTotal()),
+                                  priceTextTh(
+                                      cartNotifier.calcTotal().toString()),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: mainBlack,

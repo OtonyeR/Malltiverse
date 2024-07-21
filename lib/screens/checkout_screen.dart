@@ -9,7 +9,6 @@ import 'dart:math';
 import '../models/order_item.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
-import '../services/hive_services.dart';
 
 class CheckOutScreen extends ConsumerStatefulWidget {
   const CheckOutScreen({
@@ -21,6 +20,8 @@ class CheckOutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
+  final Random random = Random();
+
   final PageController _checkoutController = PageController();
 
   //Form Keys
@@ -40,7 +41,6 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
   String deliveryDetails = '';
   String contactDetails = '';
   String paymentDetails = '';
-  List<Product> products = []; // Assume you have this list populated
   String subTotal = '';
   int discount = 0;
   String delivery = '';
@@ -49,31 +49,10 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
   String itemNumber = '';
   List<String> contacts = [];
 
-  final Random random = Random();
-
-  OrderItem _submitOrder() {
-    final order = OrderItem(
-      subTotal: subTotal,
-      discount: discount,
-      delivery: deliveryDetails,
-      total: total,
-      paymentDetails: paymentDetails,
-      deliveryOption: delivery,
-      orderStatus: 0, // Assuming 0 is the initial status
-      statusMessage: 'Order Placed',
-      orderDate: DateTime.now(),
-      orderNumber: random.nextInt(5000) + random.nextInt(9),
-      product: products,
-      contacts: contacts,
-      deliveryFee: deliveryFee, productQuantity: itemNumber,
-    );
-    return order;
-  }
-
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
+    discount = ref.watch(cartProvider.notifier).discountAmount;
+
     return Scaffold(
       backgroundColor: mainWhite,
       body: SafeArea(
@@ -83,7 +62,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
               const NeverScrollableScrollPhysics(), // To disable manual swiping
           children: [
             _buildCheckOutPage(),
-            _buildPayPage(),
+            _buildPayPage(context),
             _buildConfirmScreen(),
           ],
         ),
@@ -127,7 +106,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                   ),
                   const SizedBox(height: 21),
                   (deliveryAddress.text.isNotEmpty ||
-                          deliveryFieldFocus.hasFocus)
+                          deliveryFieldFocus.hasFocus == true)
                       ? Container()
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,112 +375,60 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
     );
   }
 
-  Widget _buildPayPage() {
-    final cartItems = ref.watch(cartProvider);
+  Widget _buildPayPage(BuildContext context) {
+    final cartItems = ref.read(cartProvider.notifier).state;
+    final List<Product> orderProducts = cartItems;
     final cartNotifier = ref.read(cartProvider.notifier);
     final historyNotifier = ref.read(orderHistoryProvider.notifier);
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: mainWhite,
-        leading: IconButton(
-          onPressed: () {
-            _checkoutController.previousPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: mainBlack,
+    return Consumer(builder: (context, ref, child) {
+      return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: mainWhite,
+            leading: IconButton(
+              onPressed: () {
+                _checkoutController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: mainBlack,
+              ),
+            ),
+            title: const Text(
+              'Payment',
+              style: TextStyle(color: mainBlack),
+            ),
           ),
-        ),
-        title: const Text(
-          'Payment',
-          style: TextStyle(color: mainBlack),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 217, child: Image.asset('assets/Card.png')),
-                const SizedBox(height: 10),
-                SizedBox(
-                  child: Form(
-                    key: _formKeyPayment,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Card Number',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: '0000 0000 0000 0000',
-                            hintStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: BorderSide(
-                                color: mainBlack.withOpacity(0.7),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                        height: 217, child: Image.asset('assets/Card.png')),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      child: Form(
+                        key: _formKeyPayment,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Card Number',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter card number';
-                            }
-
-                            final RegExp regex =
-                                RegExp(r'^\d{4}\s\d{4}\s\d{4}\s\d{4}$');
-                            if (!regex.hasMatch(value)) {
-                              return 'Enter a valid card number';
-                            }
-
-                            return null;
-                          },
-                          inputFormatters: [
-                            CardNumberInputFormatter(),
-                            LengthLimitingTextInputFormatter(19),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 22),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Expiry Date',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          SizedBox(
-                            height: 47,
-                            child: TextFormField(
-                              keyboardType: TextInputType.datetime,
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                hintText: 'MM/YY',
+                                hintText: '0000 0000 0000 0000',
                                 hintStyle: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
@@ -514,115 +441,183 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                                 ),
                               ),
                               validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    value.length < 5) {
-                                  return 'Please enter a valid date';
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter card number';
                                 }
+
+                                final RegExp regex =
+                                    RegExp(r'^\d{4}\s\d{4}\s\d{4}\s\d{4}$');
+                                if (!regex.hasMatch(value)) {
+                                  return 'Enter a valid card number';
+                                }
+
+                                return null;
                               },
                               inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                ExpiryDateInputFormatter(),
+                                CardNumberInputFormatter(),
+                                LengthLimitingTextInputFormatter(19),
                               ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 22),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'CVV',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            obscureText: true,
-                            obscuringCharacter: '*',
-                            decoration: InputDecoration(
-                              hintText: '123',
-                              hintStyle: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(9),
-                                borderSide: BorderSide(
-                                  color: mainBlack.withOpacity(0.7),
+                    const SizedBox(height: 22),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Expiry Date',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length < 3) {
-                                return 'Please enter a valid cvv number';
-                              }
-                            },
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(3),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 47,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.datetime,
+                                  decoration: InputDecoration(
+                                    hintText: 'MM/YY',
+                                    hintStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(9),
+                                      borderSide: BorderSide(
+                                        color: mainBlack.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.length < 5) {
+                                      return 'Please enter a valid date';
+                                    }
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    ExpiryDateInputFormatter(),
+                                  ],
+                                ),
+                              ),
                             ],
-                            // validator: ,
                           ),
-                        ],
+                        ),
+                        const SizedBox(width: 22),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'CVV',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                keyboardType: TextInputType.number,
+                                obscureText: true,
+                                obscuringCharacter: '*',
+                                decoration: InputDecoration(
+                                  hintText: '123',
+                                  hintStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(9),
+                                    borderSide: BorderSide(
+                                      color: mainBlack.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null ||
+                                      value.isEmpty ||
+                                      value.length < 3) {
+                                    return 'Please enter a valid cvv number';
+                                  }
+                                },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(3),
+                                ],
+                                // validator: ,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 35),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.71728971,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKeyPayment.currentState?.validate() ??
+                              false) {
+                            final order = OrderItem(
+                              subTotal: cartNotifier.calcSubTotal().toString(),
+                              discount: discount,
+                              delivery: deliveryDetails,
+                              total: cartNotifier.calcTotal().toString(),
+                              paymentDetails: 'Card Payment',
+                              deliveryOption: delivery,
+                              orderStatus:
+                                  0, // Assuming 0 is the initial status
+                              statusMessage: 'Order Placed',
+                              orderDate: DateTime.now(),
+                              orderNumber:
+                                  random.nextInt(5000) + random.nextInt(9),
+                              product: orderProducts,
+                              contacts: contacts,
+                              deliveryFee: deliveryFee,
+                              productQuantity: cartNotifier.calcTotalQuantity(),
+                            );
+
+                            cartNotifier.checkout();
+                            historyNotifier.addOrder(order);
+                            _checkoutController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+
+                            // Create the order and add it to the order history
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        child: const Text(
+                          'Pay Now',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: mainBlack,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 35),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.71728971,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKeyPayment.currentState?.validate() ?? false) {
-                        products = cartItems;
-                        subTotal = cartNotifier.calcSubTotal();
-                        total = cartNotifier.calcTotal();
-                        paymentDetails = 'Card Payment';
-                        itemNumber = cartNotifier.calcTotalQuantity();
-                        final order = _submitOrder();
-                        historyNotifier.addOrder(order);
-
-                        _checkoutController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-
-                        // Create the order and add it to the order history
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    child: const Text(
-                      'Pay Now',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: mainBlack,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          ));
+    });
   }
 
   Widget _buildConfirmScreen() {
@@ -670,7 +665,6 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
             width: MediaQuery.of(context).size.width * 0.71728971,
             child: ElevatedButton(
               onPressed: () {
-                cartNotifier.cartItems.clear();
                 _checkoutController.dispose();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(

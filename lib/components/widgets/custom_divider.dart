@@ -7,7 +7,8 @@ class DottedLineDivider extends StatelessWidget {
   final double dashSpacing;
   final Color color;
 
-  DottedLineDivider({
+  const DottedLineDivider({
+    super.key,
     this.dashWidth = 4.0,
     this.dashHeight = 1.0,
     this.dashSpacing = 4.0,

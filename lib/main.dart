@@ -15,6 +15,7 @@ void main() async {
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(OrderItemAdapter());
   await openBoxes();
+  OrderHistoryBox().clearHistory();
   runApp(const ProviderScope(child: MyApp()));
 }
 
