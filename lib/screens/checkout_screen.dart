@@ -92,6 +92,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
 
   Widget _buildCheckOutPage() {
     final cartItems = ref.watch(cartProvider);
+    final cartNotifier = ref.read(cartProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -357,13 +358,21 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                                 content: Text('Your Cart is Empty!'),
                               ),
                             );
-                          } else if (_formKeyDelivery.currentState
-                                  ?.validate() ??
+                          } else if (_formKeyPayment.currentState?.validate() ??
                               false) {
                             _checkoutController.nextPage(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
+                            products = cartItems;
+                            subTotal = cartNotifier.calcSubTotal();
+                            total = cartNotifier.calcTotal();
+                            paymentDetails = 'Card Payment';
+                            itemNumber = cartNotifier.calcTotalQuantity();
+
+                            // Create the order and add it to the order history
+                            final order = _submitOrder();
+                            OrderHistoryBox().addOrder(order);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -579,25 +588,19 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
                   width: MediaQuery.of(context).size.width * 0.71728971,
                   child: ElevatedButton(
                     onPressed: () {
-                      void _processOrder(BuildContext context) {
-                        if (_formKeyPayment.currentState?.validate() ?? false) {
-                          _checkoutController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                          products = cartItems;
-                          subTotal = cartNotifier.calcSubTotal();
-                          total = cartNotifier.calcTotal();
-                          paymentDetails = 'Card Payment';
-                          itemNumber = cartNotifier.calcTotalQuantity();
+                      if (_formKeyPayment.currentState?.validate() ?? false) {
+                        _checkoutController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
 
-                          // Create the order and add it to the order history
-                          final order = _submitOrder();
-                          OrderHistoryBox().addOrder(order);
-
-                          // Clear the cart items
-                          cartNotifier.cartItems.clear();
-                        }
+                        products = cartItems;
+                        subTotal = cartNotifier.calcSubTotal();
+                        total = cartNotifier.calcTotal();
+                        paymentDetails = 'Card Payment';
+                        itemNumber = cartNotifier.calcTotalQuantity();
+                        final order = _submitOrder();
+                        OrderHistoryBox().addOrder(order);
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -672,7 +675,6 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
             child: ElevatedButton(
               onPressed: () {
                 cartNotifier.cartItems.clear();
-
                 _checkoutController.dispose();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(

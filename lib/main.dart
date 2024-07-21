@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:malltiverse/providers/history_provider.dart';
 import 'package:malltiverse/screens/nav_screen.dart';
 
 import 'models/order_item.dart';

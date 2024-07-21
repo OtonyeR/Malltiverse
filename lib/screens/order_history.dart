@@ -43,7 +43,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         ),
       ),
       body: orderHistory.isEmpty
-          ? const EmptyListView()
+          ? const Center(child: EmptyListView())
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(

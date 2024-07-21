@@ -5,7 +5,6 @@ import 'package:malltiverse/components/colors.dart';
 import 'package:malltiverse/screens/cart_screen.dart';
 import 'package:malltiverse/screens/checkout_screen.dart';
 import 'package:malltiverse/screens/product_screen.dart';
-import '../data/database.dart';
 import '../providers/cart_provider.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
