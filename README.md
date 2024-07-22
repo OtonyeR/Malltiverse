@@ -112,5 +112,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-- **Your Name** - [otonye.robinson7@stu.cu.edu.ng](mailto:otonye.robinson7@stu.cu.edu.ng)
+- **Email** - [otonye.robinson7@stu.cu.edu.ng](mailto:otonye.robinson7@stu.cu.edu.ng)
 - **GitHub** - [OtonyeR](https://github.com/OtonyeR)
