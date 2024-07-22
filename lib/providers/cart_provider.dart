@@ -81,15 +81,13 @@ class Cart extends StateNotifier<List<Product>> {
     } else {
       discountAmount = 0;
     }
-    state = [...state]; // To trigger the state update
+    state = [...state]; // Ensure state is updated
   }
 
   String calcTotal() {
-    int totalPrice = deliveryFee - discountAmount;
-    for (var product in state) {
-      totalPrice += product.currentPrice * product.quantity;
-    }
-    return totalPrice.toString();
+    int totalPrice = calcSubTotal();
+    totalPrice -= discountAmount;
+    return (totalPrice + deliveryFee).toString();
   }
 
   void clearCart() {
@@ -98,6 +96,7 @@ class Cart extends StateNotifier<List<Product>> {
 
   void checkout() {
     clearCart();
+    discountAmount = 0;
   }
 }
 

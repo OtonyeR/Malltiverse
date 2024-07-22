@@ -74,305 +74,306 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> {
     final cartItems = ref.watch(cartProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: mainWhite,
-        leading: Container(
-            margin: const EdgeInsets.only(left: 24),
-            child: Image.asset('assets/Malltiverse Logo.png')),
-        leadingWidth: 105,
-        title: const Text(
-          'Checkout',
-          style: TextStyle(color: mainBlack),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: mainWhite,
+          leading: Container(
+              margin: const EdgeInsets.only(left: 24),
+              child: Image.asset('assets/Malltiverse Logo.png')),
+          leadingWidth: 105,
+          title: const Text(
+            'Checkout',
+            style: TextStyle(color: mainBlack),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKeyDelivery,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Select how to receive your package(s)',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: mainBlack,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKeyDelivery,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Select how to receive your package(s)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: mainBlack,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 21),
-                  (deliveryAddress.text.isNotEmpty ||
-                          deliveryFieldFocus.hasFocus == true)
-                      ? Container()
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Pickup',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: Radio<String>(
-                                    value:
-                                        'Old Secretariat Complex, Area 1, Garki Abuja, FCT',
-                                    groupValue: _selectedPickup,
-                                    activeColor: primaryColor,
-                                    toggleable: true,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        _selectedPickup = value;
-                                      });
-                                      if (_selectedPickup != null) {
-                                        delivery = 'Pick Up';
-                                        deliveryDetails = value.toString();
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const Expanded(
-                                  child: Text(
-                                    'Old Secretariat Complex, Area 1, Garki Abuja, FCT',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                    const SizedBox(height: 21),
+                    (deliveryAddress.text.isNotEmpty ||
+                            deliveryFieldFocus.hasFocus == true)
+                        ? Container()
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Pickup',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Radio<String>(
+                                      value:
+                                          'Old Secretariat Complex, Area 1, Garki Abuja, FCT',
+                                      groupValue: _selectedPickup,
+                                      activeColor: primaryColor,
+                                      toggleable: true,
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          _selectedPickup = value;
+                                        });
+                                        if (_selectedPickup != null) {
+                                          delivery = 'Pick Up';
+                                          deliveryDetails = value.toString();
+                                        }
+                                      },
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: Radio<String>(
-                                    value:
-                                        'Sokoto Street, Area 1, Garki Area 1 AMAC',
-                                    groupValue: _selectedPickup,
-                                    activeColor: primaryColor,
-                                    toggleable: true,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        _selectedPickup = value;
-                                      });
-                                      if (_selectedPickup != null) {
-                                        delivery = 'Pick Up';
-                                        deliveryDetails = value.toString();
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const Expanded(
-                                  child: Text(
-                                    'Sokoto Street, Area 1, Garki Area 1 AMAC',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                                  const SizedBox(width: 8),
+                                  const Expanded(
+                                    child: Text(
+                                      'Old Secretariat Complex, Area 1, Garki Abuja, FCT',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Radio<String>(
+                                      value:
+                                          'Sokoto Street, Area 1, Garki Area 1 AMAC',
+                                      groupValue: _selectedPickup,
+                                      activeColor: primaryColor,
+                                      toggleable: true,
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          _selectedPickup = value;
+                                        });
+                                        if (_selectedPickup != null) {
+                                          delivery = 'Pick Up';
+                                          deliveryDetails = value.toString();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Expanded(
+                                    child: Text(
+                                      'Sokoto Street, Area 1, Garki Area 1 AMAC',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                    const SizedBox(height: 24),
+                    if (_selectedPickup == null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Delivery',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ],
-                        ),
-                  const SizedBox(height: 24),
-                  if (_selectedPickup == null)
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            controller: deliveryAddress,
+                            focusNode: deliveryFieldFocus,
+                            cursorColor: primaryColor,
+                            onTap: () {
+                              deliveryFieldFocus.hasFocus;
+                              delivery = 'Delivery';
+                            },
+                            onSaved: (value) =>
+                                deliveryDetails = deliveryAddress.text,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: const BorderSide(
+                                  color: primaryColor,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: BorderSide(
+                                  color: mainBlack.withOpacity(0.7),
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a delivery address';
+                              }
+                              if (value.length < 10) {
+                                return 'Please make sure the delivery address is accurate';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Delivery',
+                          'Contact',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 12),
-                        TextFormField(
-                          controller: deliveryAddress,
-                          focusNode: deliveryFieldFocus,
-                          cursorColor: primaryColor,
-                          onTap: () {
-                            deliveryFieldFocus.hasFocus;
-                            delivery = 'Delivery';
-                          },
-                          onSaved: (value) =>
-                              deliveryDetails = deliveryAddress.text,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: const BorderSide(
-                                color: primaryColor,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.579439,
+                          child: TextFormField(
+                            controller: phoneNumber[0],
+                            cursorColor: primaryColor,
+                            onSaved: (value) =>
+                                contacts.add(phoneNumber[0].text),
+                            decoration: InputDecoration(
+                              hintText: 'Phone no. 1',
+                              hintStyle: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: const BorderSide(
+                                  color: primaryColor,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: BorderSide(
+                                  color: mainBlack.withOpacity(0.7),
+                                ),
                               ),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: BorderSide(
-                                color: mainBlack.withOpacity(0.7),
-                              ),
-                            ),
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(11),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a phone number';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a delivery address';
-                            }
-                            if (value.length < 10) {
-                              return 'Please make sure the delivery address is accurate';
-                            }
-                            return null;
-                          },
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.579439,
+                          child: TextFormField(
+                            controller: phoneNumber[1],
+                            cursorColor: primaryColor,
+                            onSaved: (value) =>
+                                contacts.add(phoneNumber[1].text),
+                            decoration: InputDecoration(
+                              hintText: 'Phone no. 2',
+                              hintStyle: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: const BorderSide(
+                                  color: primaryColor,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide: BorderSide(
+                                  color: mainBlack.withOpacity(0.7),
+                                ),
+                              ),
+                            ),
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(11),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  const SizedBox(height: 24),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Contact',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.579439,
-                        child: TextFormField(
-                          controller: phoneNumber[0],
-                          cursorColor: primaryColor,
-                          onSaved: (value) =>
-                              contacts.add(phoneNumber[0].toString()),
-                          decoration: InputDecoration(
-                            hintText: 'Phone no. 1',
-                            hintStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: const BorderSide(
-                                color: primaryColor,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: BorderSide(
-                                color: mainBlack.withOpacity(0.7),
-                              ),
-                            ),
-                          ),
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(11),
-                          ],
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a phone number';
+                    const SizedBox(height: 60),
+                    Align(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.71728971,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (cartItems.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Your Cart is Empty!'),
+                                ),
+                              );
+                            } else if (_formKeyDelivery.currentState
+                                    ?.validate() ??
+                                false) {
+                              _formKeyDelivery.currentState
+                                  ?.save(); // Save form state
+                              _checkoutController.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
                             }
-                            return null;
                           },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.579439,
-                        child: TextFormField(
-                          controller: phoneNumber[1],
-                          cursorColor: primaryColor,
-                          onSaved: (value) =>
-                              contacts.add(phoneNumber[1].toString()),
-                          decoration: InputDecoration(
-                            hintText: 'Phone no. 2',
-                            hintStyle: const TextStyle(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                          ),
+                          child: const Text(
+                            'Proceed To Payment',
+                            style: TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w400,
+                              color: mainBlack,
+                              fontWeight: FontWeight.w600,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: const BorderSide(
-                                color: primaryColor,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9),
-                              borderSide: BorderSide(
-                                color: mainBlack.withOpacity(0.7),
-                              ),
-                            ),
-                          ),
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(11),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 60),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.71728971,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (cartItems.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Your Cart is Empty!'),
-                              ),
-                            );
-                          } else if (_formKeyDelivery.currentState
-                                  ?.validate() ??
-                              false) {
-                            _checkoutController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        child: const Text(
-                          'Proceed To Payment',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: mainBlack,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildPayPage(BuildContext context) {

@@ -4,28 +4,24 @@ import 'package:malltiverse/components/colors.dart';
 import 'package:malltiverse/components/widgets/cart_tile.dart';
 import 'package:malltiverse/components/widgets/custom_divider.dart';
 import 'package:malltiverse/components/widgets/price_tag.dart';
-import 'package:malltiverse/providers/product_provider.dart';
 import 'package:malltiverse/screens/nav_screen.dart';
 import '../components/widgets/empty_view.dart';
 import '../providers/cart_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
-  bool discountAmount = false;
-
-  CartScreen({Key? key}) : super(key: key);
+  const CartScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<CartScreen> createState() => _CartScreenState();
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
+  TextEditingController discountCode = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final cartItems = ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
-    TextEditingController discountCode = TextEditingController();
-
-    cartNotifier.discountAmount = 0;
 
     return Scaffold(
       backgroundColor: mainWhite,
@@ -239,7 +235,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               ],
                             ),
                             const SizedBox(height: 25),
-                            DottedLineDivider(),
+                            const DottedLineDivider(),
                             const SizedBox(height: 22),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
